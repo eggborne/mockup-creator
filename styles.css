@@ -1,0 +1,203 @@
+@import "fancy.css";
+
+:root {
+  --header-height: 2rem;
+  --image-aspect-ratio: calc(540/1548);
+  --image-width: 95vw;
+  --image-height: calc(var(--image-width) / var(--image-aspect-ratio));
+  --actual-height: 100dvh;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body,
+h1,
+p {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  overscroll-behavior: none;
+  -webkit-overscroll-behavior: none;
+  scroll-behavior: smooth;
+}
+
+a {
+  text-decoration: none;
+  color: #a592e4;
+}
+
+body {
+  position: relative;
+  font-family: 'Roboto', sans-serif;
+  background-color: #5f5656;
+  color: #333;
+  overscroll-behavior: none;
+  -webkit-overscroll-behavior: none;
+  scroll-behavior: smooth;
+}
+
+header,
+footer {
+  background-color: #00000088;
+  color: #ddd;
+  font-weight: bold;
+  height: var(--header-height);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+header>h2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  font-size: calc(var(--header-height) / 1.75);
+  margin: 0;
+  padding: 0;
+}
+
+footer {
+  height: 2rem;
+  font-weight: normal;
+  font-size: 0.75rem;
+}
+
+main {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1rem 0;
+}
+
+canvas {
+  pointer-events: none;
+}
+
+#adjustment-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+#image-area {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0 1rem;
+}
+
+#color-control-area {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0 1rem;
+}
+
+.color-control {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.button-area,
+.button-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-row {
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.button-area.flat {
+  flex-direction: row;
+}
+
+#image-container {
+  width: var(--image-width);
+  height: var(--image-height);
+  box-shadow: 0 0 1rem #00000022;
+}
+
+#image-1 {
+  background-image: url('./assets/monochrome/area1.png');
+}
+
+#image-2 {
+  background-image: url('./assets/monochrome/area2.png');
+}
+
+#image-3 {
+  background-image: url('./assets/monochrome/area3.png');
+}
+
+#image-4 {
+  background-image: url('./assets/monochrome/area4.png');
+}
+
+@media screen and (min-width: 800px) and (orientation: landscape) {
+  :root {
+    --image-height: calc(var(--actual-height) - var(--header-height) - 2rem);
+    --image-width: calc(var(--image-height) * var(--image-aspect-ratio));
+  }
+
+  header {
+    padding: 0 1rem;
+    justify-content: flex-start;
+  }
+
+  footer {
+    height: var(--header-height);
+    background-color: transparent;
+    width: unset;
+    position: absolute;
+    top: 0;
+    right: 1rem;
+  }
+
+  main {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 90vw;
+    justify-content: space-between;
+    max-width: 2000px;
+    height: calc(var(--actual-height) - var(--header-height));
+    margin: 0 auto;
+  }
+
+  #adjustment-area {
+    flex-grow: 0.5;
+  }
+  
+  #image-area {
+    flex-grow: 0.5;
+    width: unset;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

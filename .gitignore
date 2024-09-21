@@ -1,0 +1,40 @@
+/assets
+
+# Node modules
+node_modules/
+
+# Log files
+*.log
+
+# Directory for project builds
+dist/
+build/
+
+# Ignore compiled code
+*.o
+*.obj
+*.so
+*.exe
+
+# Temporary files
+*.tmp
+*.swp
+*.bak
+
+# Ignore generated images
+*.jpg
+*.png
+*.gif
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# IDE and editor files
+.vscode/
+.idea/
+*.code-workspace
+
+# Ignore environment variable files
+.env
+.env.local

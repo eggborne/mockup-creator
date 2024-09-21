@@ -10,6 +10,7 @@
 
 * {
   box-sizing: border-box;
+  user-select: none;
 }
 
 body,
@@ -43,7 +44,7 @@ body {
 header,
 footer {
   background-color: #00000088;
-  color: #ddd;
+  color: #ddddddcc;
   font-weight: bold;
   height: var(--header-height);
   width: 100%;
@@ -57,16 +58,16 @@ header>h2 {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
-  font-size: calc(var(--header-height) / 1.75);
+  gap: 0.5rem;
+  font-size: calc(var(--header-height) / 2);
   margin: 0;
-  padding: 0;
+  padding: 0 0.5rem;
 }
 
 footer {
   height: 2rem;
   font-weight: normal;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
 }
 
 main {
@@ -108,6 +109,13 @@ canvas {
   justify-content: center;
   gap: 1rem;
   padding: 0 1rem;
+  opacity: 1;
+  transition: opacity 500ms ease;
+}
+
+#color-control-area.busy {
+  opacity: 0.2;
+  pointer-events: none;
 }
 
 .color-control {
@@ -156,14 +164,13 @@ canvas {
   background-image: url('./assets/monochrome/area4.png');
 }
 
-@media screen and (min-width: 800px) and (orientation: landscape) {
+@media screen and (orientation: landscape) {
   :root {
     --image-height: calc(var(--actual-height) - var(--header-height) - 2rem);
     --image-width: calc(var(--image-height) * var(--image-aspect-ratio));
   }
 
   header {
-    padding: 0 1rem;
     justify-content: flex-start;
   }
 

@@ -1,90 +1,59 @@
-IMAGE_SEGMENTS = [];
-COLOR_INPUTS = [];
-ALPHA_INPUTS = [];
-LOCKED_COLOR_INDEXES = [];
+import { initializeRenderer, saveImage } from "./pixi.js";
 
-let app;
+const ORIGINAL_IMAGE = {
+  aspectRatio: 540 / 1548,
+  originalPath: './assets/original.png',
+  segments: [
+    { filePath: './assets/monochrome/area1.png', color: '#b77134', alpha: 0.96 },
+    { filePath: './assets/monochrome/area2.png', color: '#ab9269', alpha: 1 },
+    { filePath: './assets/monochrome/area3.png', color: '#ffe5b8', alpha: 1 },
+    { filePath: './assets/monochrome/area4.png', color: '#000000', alpha: 0.91 },
+  ],
+};
 
-const initializeImages = () => {
-  const containerWidth = document.getElementById('image-container').offsetWidth;
-  const containerHeight = document.getElementById('image-container').offsetHeight;
+const API_URL = 'http://localhost:3000/generateColors';
 
-  app = new PIXI.Application({
-    width: containerWidth,
-    height: containerHeight,
-    backgroundColor: '#565656',
-    // resolution: window.devicePixelRatio || 1,
-  });
+let IMAGE_SEGMENTS = [];
+let COLOR_INPUTS = [];
+let ALPHA_INPUTS = [];
+let LOCKED_COLOR_INDEXES = [];
 
-  document.getElementById('image-container').appendChild(app.view);
+const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-  const texture0 = PIXI.Texture.from('./assets/original.png');
-  const texture1 = PIXI.Texture.from('./assets/monochrome/area1.png');
-  const texture2 = PIXI.Texture.from('./assets/monochrome/area2.png');
-  const texture3 = PIXI.Texture.from('./assets/monochrome/area3.png');
-  const texture4 = PIXI.Texture.from('./assets/monochrome/area4.png');
-
-  const spriteOrig = new PIXI.Sprite(texture0);
-  const sprite1 = new PIXI.Sprite(texture1);
-  const sprite2 = new PIXI.Sprite(texture2);
-  const sprite3 = new PIXI.Sprite(texture3);
-  const sprite4 = new PIXI.Sprite(texture4);
-  const overlay1 = new PIXI.Sprite(texture1);
-  const overlay2 = new PIXI.Sprite(texture2);
-  const overlay3 = new PIXI.Sprite(texture3);
-  const overlay4 = new PIXI.Sprite(texture4);
-
-  IMAGE_SEGMENTS = [
-    new PIXI.Container(),
-    new PIXI.Container(),
-    new PIXI.Container(),
-    new PIXI.Container(),
-  ];
-
-  IMAGE_SEGMENTS[0].addChild(sprite1, overlay1);
-  IMAGE_SEGMENTS[1].addChild(sprite2, overlay2);
-  IMAGE_SEGMENTS[2].addChild(sprite3, overlay3);
-  IMAGE_SEGMENTS[3].addChild(sprite4, overlay4);
-
-
-  for (const seg of IMAGE_SEGMENTS) {
-    seg.children.forEach(c => {
-      c.width = containerWidth;
-      c.height = containerHeight;
-    });
-    // alterSprite(seg, '#aaaaaa', 0.5);
-    getRandomColors();
-  }
-
-  app.stage.addChild(...IMAGE_SEGMENTS);
-}
+document.documentElement.style.setProperty('--actual-height', `${window.innerHeight}px`);
+document.documentElement.style.setProperty('--image-aspect-ratio', ORIGINAL_IMAGE.aspectRatio);
 
 const alterSprite = (segment, color, alpha) => {
-  const sprite = segment.children[0];
   const overlay = segment.children[1];
   overlay.tint = color;
   overlay.alpha = alpha;
 };
 
+const buildHTML = () => {
+  for (let i = 0; i < ORIGINAL_IMAGE.segments.length; i++) {
+    const controlHTML = `
+    <div class="color-control">
+      <label class="fancy-checkbox">
+        <input type="checkbox" id="checkbox-${i}" />
+        <span class="checkmark"></span>
+      </label>
+      <input type="color" id="color-input-${i}">
+      <input type="range" min="0" max="1" step="0.001" value="0.5" id="alpha-input-${i}">
+    </div>
+    `;
+    document.getElementById('color-control-area').innerHTML += (controlHTML);
+  }
+  for (let i = 0; i < ORIGINAL_IMAGE.segments.length; i++) {
+    COLOR_INPUTS.push(document.getElementById(`color-input-${i}`));
+    ALPHA_INPUTS.push(document.getElementById(`alpha-input-${i}`));
+  }
+};
+
 const addInputListeners = () => {
-  COLOR_INPUTS = [
-    document.getElementById("color-input-1"),
-    document.getElementById("color-input-2"),
-    document.getElementById("color-input-3"),
-    document.getElementById("color-input-4")
-  ];
-
-  ALPHA_INPUTS = [
-    document.getElementById("alpha-input-1"),
-    document.getElementById("alpha-input-2"),
-    document.getElementById("alpha-input-3"),
-    document.getElementById("alpha-input-4")
-  ];
-
   COLOR_INPUTS.forEach((input, index) => {
     input.addEventListener("input", (event) => {
       const color = event.target.value;
-      const alpha = ALPHA_INPUTS[index].value / 1000;
+      const alpha = ALPHA_INPUTS[index].value;
       const segment = IMAGE_SEGMENTS[index];
       alterSprite(segment, color, alpha);
     });
@@ -92,44 +61,34 @@ const addInputListeners = () => {
 
   ALPHA_INPUTS.forEach((input, index) => {
     input.addEventListener("input", (event) => {
-      const alpha = event.target.value / 1000;
+      const alpha = event.target.value;
       const color = COLOR_INPUTS[index].value;
       const segment = IMAGE_SEGMENTS[index];
       alterSprite(segment, color, alpha);
     });
   });
-}
 
-const saveImage = () => {
-  const generateUniqueFilename = () => {
-    let filename = 'mockup_image';
+  const handleSaveImage = () => {
+    let fileName = 'mockup_image';
     COLOR_INPUTS.forEach((input, index) => {
       const color = input.value.replace('#', '');
-      const alpha = Math.round(ALPHA_INPUTS[index].value / 10); // Convert to 0-100 range
-      filename += `_${color}-${alpha}`;
+      const alpha = Math.round(ALPHA_INPUTS[index].value * 100);
+      fileName += `_${color}-${alpha}`;
     });
-    return `${filename}.jpg`;
+    saveImage(`${fileName}.jpg`);
   };
 
-  const fileName = generateUniqueFilename();
-  const renderer = app.renderer;
+  document.querySelectorAll('input[type="checkbox"]').forEach((checkbox, index) => {
+    checkbox.addEventListener('change', (event) => handleCheckColor(event, index));
+  });
 
-  const tempCanvas = document.createElement('canvas');
-  const tempContext = tempCanvas.getContext('2d');
-
-  tempCanvas.width = app.view.width;
-  tempCanvas.height = app.view.height;
-
-  renderer.render(app.stage);
-
-  tempContext.drawImage(renderer.view, 0, 0);
-
-  const dataURL = tempCanvas.toDataURL('image/jpeg', 1);
-
-  const link = document.createElement('a');
-  link.download = fileName;
-  link.href = dataURL;
-  link.click();
+  document.getElementById('random-button').addEventListener('click', getRandomColors);
+  if (location.hostname === 'localhost') {
+    document.getElementById('ai-button').addEventListener('click', generateColors);
+  } else {
+    document.getElementById('ai-button').disabled = true;
+  }
+  document.getElementById('download-button').addEventListener('click', handleSaveImage);
 };
 
 const getRandomHexColor = () => {
@@ -145,6 +104,23 @@ const getRandomAlpha = () => {
   return parseFloat((Math.random() * (0.9 - 0.1) + 0.1).toFixed(2));
 };
 
+const convertColorWithAlpha = ({ color, alpha }) => {
+  const colorHex = color.replace('#', '');
+  const alphaHex = Math.round(alpha * 255).toString(16).padStart(2, '0');
+  return `#${colorHex}${alphaHex}`;
+};
+
+const convertHexToColorObject = (hex) => {
+  hex = hex.replace(/^#/, '');
+  if (hex.length !== 8) {
+    hex = hex + 'ff';
+  }
+  const color = '#' + hex.slice(0, 6);
+  const alpha = parseInt(hex.slice(6), 16) / 255;
+  const roundedAlpha = Math.round(alpha * 100) / 100;
+  return { color, alpha: roundedAlpha };
+};
+
 const getRandomColors = () => {
   for (let i = 0; i < IMAGE_SEGMENTS.length; i++) {
     if (LOCKED_COLOR_INDEXES.includes(i)) continue;
@@ -152,7 +128,7 @@ const getRandomColors = () => {
     const alpha = getRandomAlpha();
     alterSprite(IMAGE_SEGMENTS[i], color, alpha);
     COLOR_INPUTS[i].value = color;
-    ALPHA_INPUTS[i].value = alpha * 1000;
+    ALPHA_INPUTS[i].value = alpha;
   }
 };
 
@@ -165,42 +141,84 @@ const handleCheckColor = (e, index) => {
   }
 };
 
-const apiUrl = 'http://localhost:3000/generateColors';
-
 const fetchColors = async (requestBody) => {
-  const result = await fetch(apiUrl, {
+  const result = await fetch(API_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(requestBody),
   });
-  const data = result.json();
+  const data = await result.json();
   if (data.error) {
     console.error('Error:', data.error);
   } else {
-    console.log('New colors:', data.newColors);
+    return data;
   }
-  return data.newColors;
 };
 
 const generateColors = async () => {
-  const lockedColors = [];
-  LOCKED_COLOR_INDEXES.forEach(ind => {
-    lockedColors.push(COLOR_INPUTS[ind].color);
-  });
+  document.getElementById('ai-button').classList.add('busy');
+  document.getElementById('color-control-area').classList.add('busy');
+
+  const colorList = [];
+  let randomLockedIndex; // for if none provided
+  let randomLockedColorObj;
+  if (LOCKED_COLOR_INDEXES.length === 0) {
+    randomLockedIndex = randomInt(0, COLOR_INPUTS.length - 1);
+    randomLockedColorObj = {
+      color: COLOR_INPUTS[randomLockedIndex].value,
+      alpha: ALPHA_INPUTS[randomLockedIndex].value
+    };
+    colorList.push(randomLockedColorObj);
+  } else {
+    for (const index of LOCKED_COLOR_INDEXES) {
+      const colorObj = {
+        color: COLOR_INPUTS[index].value,
+        alpha: ALPHA_INPUTS[index].value
+      }
+      colorList.push(colorObj);
+    }
+  }
   const requestBody = {
-    colors: lockedColors,
+    colorList,
     options: {
-      amount: COLOR_INPUTS.length - LOCKED_COLOR_INDEXES.length
+      total: COLOR_INPUTS.length
     }
   };
-  const newColors = await fetchColors(requestBody);
-  return newColors;
+  const { newColors, tokensUsed } = await fetchColors(requestBody);
+  console.log('tokensUsed', tokensUsed)
+  console.log('got newColors!', newColors);
+  if (randomLockedColorObj) {
+    newColors.push(randomLockedColorObj);
+    console.log('now newColors is!', newColors);
+  }
+  let colorsAdded = 0;
+  for (let i = 0; i < IMAGE_SEGMENTS.length; i++) {
+    if (!LOCKED_COLOR_INDEXES.includes(i) || randomLockedIndex === i) {
+      const { color, alpha } = newColors[colorsAdded];
+      alterSprite(IMAGE_SEGMENTS[i], color, alpha);
+      COLOR_INPUTS[i].value = color;
+      ALPHA_INPUTS[i].value = alpha;
+      colorsAdded++;
+    }
+  }
+  document.getElementById('ai-button').classList.remove('busy');
+  document.getElementById('color-control-area').classList.remove('busy');
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+  buildHTML();
   addInputListeners();
-  document.documentElement.style.setProperty('--actual-height', `${window.innerHeight}px`);
-  initializeImages();
+  IMAGE_SEGMENTS = initializeRenderer(
+    document.getElementById('image-container').offsetWidth,
+    document.getElementById('image-container').offsetHeight,
+    ORIGINAL_IMAGE.segments
+  );
+  for (let i = 0; i < IMAGE_SEGMENTS.length; i++) {
+    const { color, alpha } = ORIGINAL_IMAGE.segments[i];
+    alterSprite(IMAGE_SEGMENTS[i], color, alpha);
+    COLOR_INPUTS[i].value = color;
+    ALPHA_INPUTS[i].value = alpha;
+  }
 });

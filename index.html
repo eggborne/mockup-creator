@@ -9,57 +9,26 @@
   <link rel="stylesheet" href="./styles.css">
   <link rel="icon" href="favicon.ico">
   <script src="https://cdn.jsdelivr.net/npm/pixi.js@7.x/dist/pixi.min.js"></script>
-  <script defer src="app.js"></script>
+  <script type="module" defer src="app.js"></script>
 </head>
 
 <body>
   <header>
     <h2>
-      <div>🐔</div> Mockup Creator <div style="transform: scaleX(-1)">🐔</div>
+      <div>🖼️</div> Mockup Creator <div>✏️</div>
     </h2>
   </header>
   <main>
     <div id="adjustment-area">      
-      <div id="color-control-area">
-        <div class="color-control">
-          <label class="fancy-checkbox">
-            <input type="checkbox" onClick="handleCheckColor(event, 0)" id="checkbox-1" />
-            <span class="checkmark"></span>
-          </label>
-          <input type="color" value="#aaaaaa" id="color-input-1">
-          <input type="range" min="10" max="1000" value="500" id="alpha-input-1">
-        </div>
-        <div class="color-control">
-          <label class="fancy-checkbox">
-            <input type="checkbox" onClick="handleCheckColor(event, 1)" id="checkbox-2" />
-            <span class="checkmark"></span>
-          </label> <input type="color" value="#aaaaaa" id="color-input-2">
-          <input type="range" min="10" max="1000" value="500" id="alpha-input-2">
-        </div>
-        <div class="color-control">
-          <label class="fancy-checkbox">
-            <input type="checkbox" onClick="handleCheckColor(event, 2)" id="checkbox-3" />
-            <span class="checkmark"></span>
-          </label> <input type="color" value="#aaaaaa" id="color-input-3">
-          <input type="range" min="10" max="1000" value="500" id="alpha-input-3">
-        </div>
-        <div class="color-control">
-          <label class="fancy-checkbox">
-            <input type="checkbox" onClick="handleCheckColor(event, 3)" id="checkbox-4" />
-            <span class="checkmark"></span>
-          </label> <input type="color" value="#aaaaaa" id="color-input-4">
-          <input type="range" min="10" max="1000" value="500" id="alpha-input-4">
-        </div>
-      </div>
+      <div id="color-control-area"></div>
       <div class="button-area">
         <div class="button-row">
-          <button class="fancy-button flat" id="random-button" onClick="getRandomColors()">Random</button>
-          <button class="fancy-button blue flat" id="random-button" onClick="">AI ✨</button>
+          <button class="fancy-button flat" id="random-button">Random</button>
+          <button class="fancy-button blue flat" id="ai-button">Use AI ✨</button>
         </div>
-        <button class="fancy-button green" id="download-button" onClick="saveImage()">Download Image</button>
+        <button class="fancy-button green" id="download-button">Download Image</button>
       </div>
     </div>
-    
     <div id="image-area">
       <div id="image-container"></div>
     </div>

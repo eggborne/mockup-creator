@@ -2,6 +2,7 @@
 /* button */
 
 .fancy-button {
+  position: relative;
   background: linear-gradient(0deg, #ff7e5f, #feb47b);
   border: none;
   border-radius: 2rem;
@@ -9,7 +10,83 @@
   padding: 1rem 1.5rem;
   font-size: 1rem;
   cursor: pointer;
+  box-shadow: 0 0 0.25rem 0.25rem #0001;
+  transition: transform 100ms;
+}
+
+.fancy-button:disabled {
+  opacity: 0.8;
+  filter: saturate(0)
+}
+
+.fancy-button:active {
+  transform: scale(0.95);
+}
+
+.fancy-button.busy {
+  cursor: not-allowed;
+  color: transparent;
+  
+}
+
+.fancy-button.busy {
+  cursor: not-allowed;
+  color: transparent;
+  /* Hide text while loading */
   position: relative;
+}
+
+.fancy-button.busy::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.1);
+  /* Overlay color */
+  border-radius: inherit;
+  animation: fluctuate 500ms ease-in-out infinite;
+  z-index: 1;
+}
+
+.fancy-button.busy::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: -0.75rem;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 1s linear infinite;
+  z-index: 2;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fluctuate {
+  0% {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  50% {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+
+  100% {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
 }
 
 .fancy-button.green {
@@ -22,7 +99,6 @@
 
 .fancy-button.flat {
   border-radius: 0.25rem;
-  box-shadow: none;
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
 }
@@ -34,8 +110,6 @@
   display: inline-flex;
   align-items: center;
   cursor: pointer;
-  font-size: 18px;
-  user-select: none;
 }
 
 .fancy-checkbox input {
@@ -50,6 +124,7 @@
   width: 2rem;
   border-radius: 0.25rem;
   transition: box-shadow 300ms, transform 90ms, opacity 150ms;
+  line-height: 0;
 }
 
 .fancy-checkbox .checkmark::after {

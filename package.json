@@ -1,11 +1,10 @@
 {
   "name": "mockup-creator",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "app.mjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "mike@mikedonovan.dev",
   "license": "ISC",
-  "description": ""
-}
+  "description": ""}

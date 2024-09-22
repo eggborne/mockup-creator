@@ -1,6 +1,7 @@
 @import "fancy.css";
 
 :root {
+  
   --header-height: 2rem;
   --image-aspect-ratio: calc(540/1548);
   --image-width: 95vw;
@@ -148,22 +149,6 @@ canvas {
   box-shadow: 0 0 1rem #00000022;
 }
 
-#image-1 {
-  background-image: url('./assets/monochrome/area1.png');
-}
-
-#image-2 {
-  background-image: url('./assets/monochrome/area2.png');
-}
-
-#image-3 {
-  background-image: url('./assets/monochrome/area3.png');
-}
-
-#image-4 {
-  background-image: url('./assets/monochrome/area4.png');
-}
-
 @media screen and (orientation: landscape) {
   :root {
     --image-height: calc(var(--actual-height) - var(--header-height) - 2rem);
@@ -193,6 +178,7 @@ canvas {
     max-width: 2000px;
     height: calc(var(--actual-height) - var(--header-height));
     margin: 0 auto;
+    /* width: 99vw; */
   }
 
   #adjustment-area {
@@ -206,5 +192,6 @@ canvas {
     display: flex;
     align-items: center;
     justify-content: center;
+    /* justify-content: flex-end; */
   }
 }

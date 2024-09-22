@@ -1,4 +1,5 @@
 /assets
+secret.json
 
 # Node modules
 node_modules/

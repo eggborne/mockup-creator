@@ -1,17 +1,22 @@
 import { initializeRenderer, saveImage } from "./pixi.js";
+// import handleDriveUpload from "./googledrive.js";
 
 const ORIGINAL_IMAGE = {
-  aspectRatio: 540 / 1548,
+  aspectRatio: 540/1548,
   originalPath: './assets/original.png',
   segments: [
-    { filePath: './assets/monochrome/area1.png', color: '#b77134', alpha: 0.96 },
+    { filePath: './assets/monochrome/area1.png', color: '#b77134', alpha: 1 },
     { filePath: './assets/monochrome/area2.png', color: '#ab9269', alpha: 1 },
     { filePath: './assets/monochrome/area3.png', color: '#ffe5b8', alpha: 1 },
-    { filePath: './assets/monochrome/area4.png', color: '#000000', alpha: 0.91 },
+    { filePath: './assets/monochrome/area4.png', color: '#000000', alpha: 1 },
   ],
 };
 
-const API_URL = 'http://localhost:3000/generateColors';
+const protocol = 'http:'
+const host = location.hostname;
+
+
+const API_URL = `${protocol}//${host}:3000/generateColors`;
 
 let IMAGE_SEGMENTS = [];
 let COLOR_INPUTS = [];
@@ -38,7 +43,7 @@ const buildHTML = () => {
         <span class="checkmark"></span>
       </label>
       <input type="color" id="color-input-${i}">
-      <input type="range" min="0" max="1" step="0.001" value="0.5" id="alpha-input-${i}">
+      <input type="range" min="0" max="1" step="0.01" value="0.5" id="alpha-input-${i}">
     </div>
     `;
     document.getElementById('color-control-area').innerHTML += (controlHTML);
@@ -83,12 +88,13 @@ const addInputListeners = () => {
   });
 
   document.getElementById('random-button').addEventListener('click', getRandomColors);
-  if (location.hostname === 'localhost') {
+  if (location.protocol === 'http:') {
     document.getElementById('ai-button').addEventListener('click', generateColors);
   } else {
     document.getElementById('ai-button').disabled = true;
   }
   document.getElementById('download-button').addEventListener('click', handleSaveImage);
+  // document.getElementById('drive-button').addEventListener('click', handleDriveUpload);
 };
 
 const getRandomHexColor = () => {
@@ -191,7 +197,7 @@ const generateColors = async () => {
   console.log('got newColors!', newColors);
   if (randomLockedColorObj) {
     newColors.push(randomLockedColorObj);
-    console.log('now newColors is!', newColors);
+    console.log('now newColors is', newColors);
   }
   let colorsAdded = 0;
   for (let i = 0; i < IMAGE_SEGMENTS.length; i++) {
@@ -210,9 +216,12 @@ const generateColors = async () => {
 document.addEventListener("DOMContentLoaded", () => {
   buildHTML();
   addInputListeners();
+  const containerWidth = document.getElementById('image-container').offsetWidth;
+  const containerHeight = document.getElementById('image-container').offsetHeight;
+  console.log('cont size', containerWidth, containerHeight)
   IMAGE_SEGMENTS = initializeRenderer(
-    document.getElementById('image-container').offsetWidth,
-    document.getElementById('image-container').offsetHeight,
+    containerWidth,
+    containerHeight,
     ORIGINAL_IMAGE.segments
   );
   for (let i = 0; i < IMAGE_SEGMENTS.length; i++) {

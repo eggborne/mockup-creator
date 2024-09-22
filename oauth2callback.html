@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>OAuth2 Callback</title>
+</head>
+
+<body>
+  <script>
+    window.onload = function () {
+      // Pass the URL hash fragment to the parent window
+      if (window.opener && window.opener.googleAuthCallback) {
+        window.opener.googleAuthCallback(window.location.href);
+        window.close();
+      }
+    };
+  </script>
+  Redirecting...
+</body>
+
+</html>

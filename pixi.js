@@ -6,7 +6,7 @@ export const initializeRenderer = (containerWidth, containerHeight, segments) =>
     width: containerWidth,
     height: containerHeight,
     backgroundColor: '#565656',
-    resolution: location.hostname === 'localhost' ? 1 : window.devicePixelRatio,
+    // resolution: location.protocol === 'http:' ? 1 : window.devicePixelRatio,
   });
 
   document.getElementById('image-container').appendChild(pixi.view);

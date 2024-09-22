@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="./styles.css">
   <link rel="icon" href="favicon.ico">
   <script src="https://cdn.jsdelivr.net/npm/pixi.js@7.x/dist/pixi.min.js"></script>
+  <script src="https://apis.google.com/js/api.js"></script>
   <script type="module" defer src="app.js"></script>
 </head>
 
@@ -19,14 +20,15 @@
     </h2>
   </header>
   <main>
-    <div id="adjustment-area">      
+    <div id="adjustment-area">
       <div id="color-control-area"></div>
       <div class="button-area">
         <div class="button-row">
           <button class="fancy-button flat" id="random-button">Random</button>
           <button class="fancy-button blue flat" id="ai-button">Use AI ✨</button>
         </div>
-        <button class="fancy-button green" id="download-button">Download Image</button>
+        <button class="fancy-button green" id="download-button">Download</button>
+        <!-- <button class="fancy-button green" id="drive-button">Send to Drive</button> -->
       </div>
     </div>
     <div id="image-area">
